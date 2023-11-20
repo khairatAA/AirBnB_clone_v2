@@ -41,7 +41,6 @@ class FileStorage:
             obj.id = str(uuid.uuid4())
             self.all().update({f"{obj.__class__.__name__}.{obj.id}": obj})
 
-
     def save(self):
         """Saves storage dictionary to file"""
         with open(FileStorage.__file_path, 'w') as f:
