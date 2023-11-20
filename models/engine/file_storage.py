@@ -1,6 +1,7 @@
 #!/usr/bin/python3
 """This module defines a class to manage file storage for hbnb clone"""
 import json
+import uuid
 
 
 class FileStorage:
@@ -11,10 +12,20 @@ class FileStorage:
     def all(self):
         """Returns a dictionary of models currently in storage"""
         return FileStorage.__objects
+    """
+    def new(self, obj):
+        Adds new object to storage dictionary
+        self.all().update({obj.to_dict()['__class__'] + '.' + obj.id: obj})
+    """
 
     def new(self, obj):
         """Adds new object to storage dictionary"""
-        self.all().update({obj.to_dict()['__class__'] + '.' + obj.id: obj})
+        if hasattr(obj, 'id'):
+            self.all().update({f"{obj.__class__.__name__}.{obj.id}": obj})
+        else:
+            obj.id = str(uuid.uuid4())
+            self.all().update({f"{obj.__class__.__name__}.{obj.id}": obj})
+
 
     def save(self):
         """Saves storage dictionary to file"""

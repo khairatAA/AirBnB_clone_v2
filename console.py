@@ -113,8 +113,9 @@ class HBNBCommand(cmd.Cmd):
         """ Overrides the emptyline method of CMD """
         pass
 
+    """
     def do_create(self, args):
-        """ Create an object of any class"""
+        Create an object of any class
         if not args:
             print("** class name missing **")
             return
@@ -122,6 +123,55 @@ class HBNBCommand(cmd.Cmd):
             print("** class doesn't exist **")
             return
         new_instance = HBNBCommand.classes[args]()
+        storage.save()
+        print(new_instance.id)
+        storage.save()
+    """
+    def do_create(self, args):
+        """Create an object of any class"""
+        if not args:
+            print("* class name missing *")
+            return
+        
+        """ split args by space"""
+        args_list = args.split()
+        """extracting the class name"""
+        class_name = args_list[0]
+        if class_name not in HBNBCommand.classes:
+            print("* class doesn't exists *")
+            return
+        
+        """Extracting attribute-value pairs"""
+        attr_args = args_list[1:]
+        attributes = {}
+        for arg in attr_args:
+            key_value = arg.split('=')
+            if len(key_value) != 2:
+                continue
+            key, value = key_value
+            """
+            Handling the string value. removing the quotes,
+            replacing underscore with space, and also replace
+            escape quotes
+            """
+            if value.startswith('"') and value.endswith('"'):
+                value = value[1:-1]
+                value = value.replace('_', ' ')
+                value = value.replace('\\"', '"')
+                """ Handling the float values """
+            elif '.' in value:
+                try:
+                    value = float(value)
+                except ValueError:
+                    continue
+            else:
+                try:
+                    value = int(value)
+                except ValueError:
+                    continue
+            attributes[key] = value
+
+        new_instance = HBNBCommand.classes[class_name](**attributes)
         storage.save()
         print(new_instance.id)
         storage.save()
