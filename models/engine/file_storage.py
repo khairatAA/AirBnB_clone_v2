@@ -22,7 +22,7 @@ class FileStorage:
             cls: class to be filter out and displayed
         """
 
-        if cls == None:
+        if cls is None:
             return FileStorage.__objects
 
         if (cls not in FileStorage.__objects):
@@ -30,7 +30,7 @@ class FileStorage:
         else:
             for key in FileStorage.__objects.keys():
                 if (key == cls):
-                    return(FileStorage.__objects[key])
+                    return (FileStorage.__objects[key])
 
     def new(self, obj):
         """Adds new object to storage dictionary"""
