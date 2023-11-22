@@ -1,9 +1,11 @@
 #!/usr/bin/python3
 """ Module for testing file storage"""
-import unittest
 from models.base_model import BaseModel
+from models.engine.file_storage import FileStorage
+from models.state import State
 from models import storage
 import os
+import unittest
 
 
 class test_fileStorage(unittest.TestCase):
@@ -21,7 +23,7 @@ class test_fileStorage(unittest.TestCase):
         """ Remove storage file at end of tests """
         try:
             os.remove('file.json')
-        except:
+        except Exception as e:
             pass
 
     def test_obj_list_empty(self):
@@ -104,6 +106,35 @@ class test_fileStorage(unittest.TestCase):
 
     def test_storage_var_created(self):
         """ FileStorage object storage created """
-        from models.engine.file_storage import FileStorage
         print(type(storage))
         self.assertEqual(type(storage), FileStorage)
+
+    def test_all_with_class(self):
+        """Test all() method with a class passed"""
+        new_state = State()
+        new_state.name = "California"
+        storage.new(new_state)
+        storage.save()
+
+        all_state = storage.all(State)
+        count = len(all_state)
+
+        self.assertEqual(1, count)
+
+        # Adding another state
+        new_state = State()
+        new_state.name = "Nevada"
+        storage.new(new_state)
+        storage.save()
+
+        all_state = storage.all(State)
+        count = len(all_state)
+
+        self.assertEqual(2, count)
+
+        # when no instance when created
+        storage.all() == {}
+        state_obj = storage.all(State)
+        self.assertEqual(len(state_obj), 2)
+
+    # def test_delete_when_no_argument_is_pass():
