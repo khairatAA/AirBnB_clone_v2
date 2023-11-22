@@ -61,10 +61,10 @@ class DBStorage:
                 db_storage[key] = item
         else:
             for obj in object_types:
-                   query = self.__session.query(obj)
-                   for item in query.all():
-                       key = "{}.{}".format(item.__class__.__name__, item.id)
-                       db_storage[key] = item
+                query = self.__session.query(obj)
+                for item in query.all():
+                    key = "{}.{}".format(item.__class__.__name__, item.id)
+                    db_storage[key] = item
 
         return db_storage
 

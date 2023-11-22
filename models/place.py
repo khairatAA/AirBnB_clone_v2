@@ -45,12 +45,14 @@ class Place(BaseModel, Base):
             default=0
             )
 
-    max_guest = Column(Integer,
+    max_guest = Column(
+            Integer,
             nullable=False,
             default=0
             )
 
-    price_by_night = Column(Integer,
+    price_by_night = Column(
+            Integer,
             nullable=False,
             default=0
             )
@@ -60,7 +62,8 @@ class Place(BaseModel, Base):
             nullable=True
             )
 
-    longitude = Column(Float,
+    longitude = Column(
+            Float,
             nullable=True
             )
 
@@ -82,7 +85,8 @@ class Place(BaseModel, Base):
         from models import storage
         d_review = storage.all(Review)
         matching_reviews = [
-            review for review in d_review.values() if review.place_id == self.id
+            review for review in d_review.values()
+            if review.place_id == self.id
         ]
         return matching_reviews
     '''
