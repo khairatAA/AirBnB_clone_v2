@@ -12,9 +12,9 @@ class Review(BaseModel):
     place_id = Column(String(60), nullable=False)
     user_id = Column(String(60), nullable=False)
 
+    '''
     places = relationship("Place", backref="reviews",
                          cascade="all, delete-orphan")
     user = relationship("User", backref="reviews",
                         cascade="all, delete-orphan")
-
-
+    '''
