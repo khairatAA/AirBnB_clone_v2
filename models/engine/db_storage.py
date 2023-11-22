@@ -8,7 +8,7 @@ from models.user import User
 from models.place import Place
 from models.state import State
 from models.review import Review
-from sqlalchemy import create_engine, MetaData
+from sqlalchemy import create_engine
 from sqlalchemy.orm import scoped_session
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.ext.declarative import declarative_base
@@ -22,22 +22,21 @@ class DBStorage:
 
     def __init__(self):
         '''The constructor of the DBStorage'''
-        user = os.environ.get('HBNB_MYSQL_USER')
-        passwd = os.environ.get('HBNB_MYSQL_PWD')
-        host = os.environ.get('HBNB_MYSQL_HOST')
-        db = os.environ.get('HBNB_MYSQL_DB')
-        env = os.environ.get('HBNB_ENV')
+        user = os.getenv('HBNB_MYSQL_USER')
+        passwd = os.getenv('HBNB_MYSQL_PWD')
+        host = os.getenv('HBNB_MYSQL_HOST')
+        db = os.getenv('HBNB_MYSQL_DB')
+        env = os.getenv('HBNB_ENV')
 
-        if self.__engine is None:
-            url = (
-                    "mysql+mysqldb://{}:{}@{}/{}".format(
-                        user, passwd, host, db
-                        )
+        url = (
+                "mysql+mysqldb://{}:{}@{}/{}".format(
+                    user, passwd, host, db
                     )
-            self.__engine = create_engine(url, pool_pre_ping=True)
+                )
+        self.__engine = create_engine(url, pool_pre_ping=True)
 
-            if (env == 'test'):
-                Base.metadata.drop_all(self.__engine)
+        if (env == 'test'):
+            Base.metadata.drop_all(self.__engine)
 
     def all(self, cls=None):
         '''query on the current database session'''
@@ -49,7 +48,7 @@ class DBStorage:
                 key = "{}.{}".format(type(item).__name__, item.id)
                 db_storage[key] = item
         else:
-            object_types = [User, State, City, Amenity, Place, Review]
+            object_types = [State, City]
 
             for obj in object_types:
                 query = self.__session.query(obj).all()

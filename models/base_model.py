@@ -9,6 +9,7 @@ from sqlalchemy.ext.declarative import declarative_base
 
 Base = declarative_base()
 
+
 class BaseModel:
     """A base class for all hbnb models"""
 
@@ -36,9 +37,10 @@ class BaseModel:
                 if (key == '__class__'):
                     continue
 
-                val = datetime.fromisoformat(value)
-
-                setattr(self, key, val if ('_at' in key) else value)
+                if '_at' in key:  # Check if it's a datetime attribute
+                    setattr(self, key, datetime.fromisoformat(value))
+                else:
+                    setattr(self, key, value)
 
     def __str__(self):
         """Returns a string representation of the instance"""
@@ -61,7 +63,7 @@ class BaseModel:
         dictionary['created_at'] = self.created_at.isoformat()
         dictionary['updated_at'] = self.updated_at.isoformat()
         if '_sa_instance_state' in dictionary:
-            del dictionary['_sa_instance_state']
+            dictionary.pop('_sa_instance_state')
 
         return dictionary
 

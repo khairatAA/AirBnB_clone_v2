@@ -14,7 +14,7 @@ class State(BaseModel, Base):
 
     __tablename__ = "states"
 
-    storage_type = os.environ.get('HBNB_TYPE_STORAGE')
+    storage_type = os.getenv('HBNB_TYPE_STORAGE')
 
     if storage_type == 'db':
         name = Column(String(128), nullable=False)
@@ -28,7 +28,7 @@ class State(BaseModel, Base):
         name = ""
         cities = []
 
-    if (os.environ.get("HBNB_TYPE_STORAGE", "fs") == "fs"):
+    if (os.environ.get("HBNB_TYPE_STORAGE", 'file') == "file"):
         @property
         def cities(self):
             '''
