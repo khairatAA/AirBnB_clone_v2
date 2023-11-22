@@ -20,7 +20,7 @@ class FileStorage:
         """
         Returns a dictionary of models currently in storage,
         that returns the list of objects of one type of class
-        
+
         Args:
             cls: class to be filter out and displayed
         """
