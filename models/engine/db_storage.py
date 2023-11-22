@@ -11,6 +11,7 @@ from models.review import Review
 from sqlalchemy import create_engine, MetaData
 from sqlalchemy.orm import scoped_session
 from sqlalchemy.orm import sessionmaker
+from sqlalchemy.ext.declarative import declarative_base
 
 
 class DBStorage:
@@ -33,20 +34,10 @@ class DBStorage:
                         user, passwd, host, db
                         )
                     )
+            self.__engine = create_engine(url, pool_pre_ping=True)
 
             if (env == 'test'):
-                self.__engine = create_engine(
-                        url, pool_pre_ping=True, echo=True
-                        )
-
-                metadata = MetaData(bind=self.__engine)
-                metadata.reflect()
-
-                metadata.drop_all()
-            else:
-                self.__engine = create_engine(
-                        url, pool_pre_ping=True, echo=True
-                        )
+                Base.metadata.drop_all(self.__engine)
 
     def all(self, cls=None):
         '''query on the current database session'''
@@ -88,7 +79,10 @@ class DBStorage:
         '''create all tables in the databas'''
         Base.metadata.create_all(self.__engine)
         session_factory = sessionmaker(
-                bind=self.__engine, expire_on_commit=False
+                self.__engine, expire_on_commit=False
                 )
-        Session = scoped_session(session_factory)
-        self.__session = Session()
+        self.__session = scoped_session(session_factory)
+
+    def close(self):
+        """ Close the session"""
+        self.__session.close()
