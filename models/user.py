@@ -27,16 +27,14 @@ class User(BaseModel, Base):
         places = relationship(
                 "Place",
                 backref="user",
-                cascade="all, delete-orphan")
+                cascade="delete")
 
         reviews = relationship(
                 "Review",
                 backref="user",
-                cascade="all, delete-orphan")
+                )
     else:
         email = ""
         password = ''
         first_name = ''
         last_name = ''
-        places = []
-        reviews = []
