@@ -51,7 +51,7 @@ class DBStorage:
                     #"Amenity": Amenity
                   }
         '''
-        object_types = (City, Place, State, User)
+        object_types = (City, Place, State, User, Review)
 
         if (cls is not None):
             query = self.__session.query(cls)
@@ -70,8 +70,7 @@ class DBStorage:
 
     def new(self, obj):
         '''add the object to the current database session'''
-        if (obj):
-            self.__session.add(obj)
+        self.__session.add(obj)
 
     def save(self):
         '''commit all changes of the current database session'''

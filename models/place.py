@@ -5,6 +5,8 @@ from sqlalchemy import Column, String, Integer, Float, ForeignKey
 from sqlalchemy.orm import relationship
 from sqlalchemy.ext.declarative import declarative_base
 from models.review import Review
+from os import getenv
+import models
 
 
 class Place(BaseModel, Base):
@@ -33,7 +35,7 @@ class Place(BaseModel, Base):
             nullable=True
             )
 
-    number_rooms = Column(
+    number_room = Column(
             Integer,
             nullable=False,
             default=0
@@ -58,35 +60,37 @@ class Place(BaseModel, Base):
             )
 
     latitude = Column(
-            Float,
-            nullable=True
-            )
+                Float,
+                nullable=True
+                )
 
     longitude = Column(
             Float,
             nullable=True
             )
 
-    '''amenity_ids = []'''
-    '''
-    reviews = relationship("Review", backref="place",
-                           cascade="all, delete-orphan")
-    '''
+    if getenv("HBNB_TYPE_STORAGE") == "db":
+        reviews = relationship(
+                "Review",
+                backref="place",
+                cascade="all, delete-orphan"
+                )
 
-    '''
-    @property
-    def reviews(self):
-        """
-        for FileStorage: getter attribute reviews that returns
-        the list of Review instances with place_id equals to the current
-        Place.id => It will be the FileStorage relationship
-        between Place and Review
-        """
-        from models import storage
-        d_review = storage.all(Review)
-        matching_reviews = [
-            review for review in d_review.values()
-            if review.place_id == self.id
-        ]
-        return matching_reviews
-    '''
+    else:
+        @property
+        def reviews(self):
+            """
+            for FileStorage: getter attribute reviews that returns
+            the list of Review instances with place_id equals to the current
+            Place.id => It will be the FileStorage relationship
+            between Place and Review
+            """
+
+            matching_reviews = []
+
+            matching_obj = models.storage.all(Review)
+
+            for key, value in matching_obj.items():
+                if value.place_id == self.id:
+                    matching_reviews.append(value)
+            return matching_reviews
