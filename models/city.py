@@ -13,11 +13,12 @@ class City(BaseModel, Base):
     __tablename__ = 'cities'
 
     if (os.environ.get("HBNB_TYPE_STORAGE", "file") == "db"):
-        name = Column(String(128), nullable=False)
         state_id = Column(
                 String(60),
                 ForeignKey('states.id'), nullable=False
                 )
+
+        name = Column(String(128), nullable=False)
 
         places = relationship("Place",
                               backref="cities",
