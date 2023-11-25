@@ -35,7 +35,7 @@ class Place(BaseModel, Base):
                 String(1024)
                 )
 
-        number_room = Column(
+        number_rooms = Column(
                 Integer,
                 nullable=False,
                 default=0
