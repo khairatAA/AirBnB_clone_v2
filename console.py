@@ -172,7 +172,7 @@ class HBNBCommand(cmd.Cmd):
             attributes[key] = value
 
         new_instance = HBNBCommand.classes[class_name](**attributes)
-        storage.new(new_instance)
+        # storage.new(new_instance)
         new_instance.save()
         print(new_instance.id)
 
