@@ -2,7 +2,7 @@
 # sets up your web servers for the deployment of web_static
 
 # Install Nginx if it not already installed
-if ! command -v nginx &> /dell/null; then
+if ! command -v nginx &> /dev/null; then
 	apt-get update
 	apt install nginx -y
 fi
@@ -33,17 +33,16 @@ if ! [ -d "/data/web_static/releases/test/" ]; then
 fi
 
 # Create a fake HTML file /data/web_static/releases/test/index.html (with simple content, to test your Nginx configuration)
-if ! [ -f "/data/web_static/releases/test/index.html" ]; then
-	content = "<html>
-	<head>
-	</head>
-	<body>
-		Testing Nginx configuration
-	</body>
+content="
+<html>
+<head>
+</head>
+<body>
+	<h1>Testing Nginx configuration</h1>
+</body>
 </html>"
 
-        echo "$content" > "/data/web_static/releases/test/index.html"
-fi
+echo "$content" > "/data/web_static/releases/test/index.html"
 
 # Create a symbolic link /data/web_static/current linked to the /data/web_static/releases/test/ folder. If the symbolic link already exists, it should be deleted and recreated every time the script is ran.
 
@@ -58,4 +57,21 @@ chown -R "ubuntu":"ubuntu" "/data/"
 
 # Update the Nginx configuration to serve the content of /data/web_static/current/ to hbnb_static (ex: https://mydomainname.tech/hbnb_static
 
-service nginx start
+location_config='
+    location /hbnb_static {
+        alias /data/web_static/current/;
+    }
+'
+
+# Path to your Nginx configuration file
+nginx_config="/etc/nginx/sites-available/default"
+
+# Add the location configuration to the Nginx file
+if ! grep -q "$location_config" "$nginx_config"; then
+        sudo bash -c "cat <<EOF >>$nginx_config
+
+$location_config
+EOF"
+fi
+
+service nginx restart
