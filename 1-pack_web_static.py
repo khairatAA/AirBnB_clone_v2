@@ -1,6 +1,6 @@
 #!/usr/bin/python3
 """1-pack_web_static module"""
-import os.path
+import os
 from datetime import datetime
 from fabric.api import local
 
@@ -12,8 +12,8 @@ def do_pack():
     """
 
     path = "versions"
-    if not os.exists(path):
-        os.mkdir(path)
+    if not os.path.exists(path):
+        os.makedirs(path)
 
     currentDateAndTime = datetime.now()
     archiveTime = currentDateAndTime.strftime("%Y%m%d%H%M%S")
