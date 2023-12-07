@@ -57,21 +57,10 @@ chown -R "ubuntu":"ubuntu" "/data/"
 
 # Update the Nginx configuration to serve the content of /data/web_static/current/ to hbnb_static (ex: https://mydomainname.tech/hbnb_static
 
-location_config='
-    location /hbnb_static {
-        alias /data/web_static/current/;
-    }
-'
+location_config="\n\tlocation /hbnb_static {\n\
+\t\talias /data/web_static/current/;\n\t}"
 
-# Path to your Nginx configuration file
-nginx_config="/etc/nginx/sites-available/default"
+# Add the location configuration to the Nginx
+sed -i "/server_name _;/a \ $location_config" /etc/nginx/sites-available/default
 
-# Add the location configuration to the Nginx file
-if ! grep -q "$location_config" "$nginx_config"; then
-        sudo bash -c "cat <<EOF >>$nginx_config
-
-$location_config
-EOF"
-fi
-
-service nginx restart
+service nginx restart > /dev/null
