@@ -53,11 +53,7 @@ def do_deploy(archive_path):
         return False
 
     try:
-        """Upload to /tmp/ directory of the server"""
-        put(archive_path, "/tmp/")
-
-        """Retrive the file name"""
-        archived_file = "/tmp/" + archive_path[9:]
+        archived_file = archive_path[9:]
 
         """Without the extension"""
         file_without_ext = archived_file[:-4]
@@ -65,6 +61,12 @@ def do_deploy(archive_path):
         """Full path without the extension of the file"""
         file_dir = "/data/web_static/releases/{}".format(
                 file_without_ext)
+
+        """Retrive the file name"""
+        archived_file = "/tmp/" + archive_path[9:]
+
+        """Upload to /tmp/ directory of the server"""
+        put(archive_path, "/tmp/")
 
         """Create the directory & Uncompress the file"""
         run("sudo mkdir -p {}".format(file_dir))
