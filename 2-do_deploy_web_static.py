@@ -88,8 +88,7 @@ def do_deploy(archive_path):
         run("rm -rf {}".format("/data/web_static/current"))
 
         """Create a symbolic link"""
-        run("ln -s {} {}".format(
-            file_dir, "/data/web_static/current"))
+        run("ln -s {} /data/web_static/current".format(file_dir))
 
         print("New version deployed!")
 
