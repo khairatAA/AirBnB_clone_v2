@@ -55,7 +55,7 @@ def do_deploy(archive_path):
     try:
         archived_file = archive_path[9:]
 
-        """Without the extension"""
+        """Without the extension."""
         file_without_ext = archived_file[:-4]
 
         """Full path without the extension of the file"""
