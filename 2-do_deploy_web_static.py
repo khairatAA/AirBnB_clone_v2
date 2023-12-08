@@ -59,7 +59,7 @@ def do_deploy(archive_path):
         file_without_ext = archived_file[:-4]
 
         """Full path without the extension of the file"""
-        file_dir = "/data/web_static/releases/{}".format(
+        file_dir = "/data/web_static/releases/{}/".format(
                 file_without_ext)
 
         """Retrive the file name"""
@@ -69,31 +69,30 @@ def do_deploy(archive_path):
         put(archive_path, "/tmp/")
 
         """Create the directory & Uncompress the file"""
-        run("sudo mkdir -p {}".format(file_dir))
+        run("mkdir -p {}".format(file_dir))
 
         run(
-                "sudo tar -xvf {} -C {}/".format(
+                "tar -xvf {} -C {}".format(
                     archived_file,
                     file_dir
                     )
                 )
 
         """Remove thr archived file"""
-        run("sudo rm {}".format(archived_file))
+        run("rm {}".format(archived_file))
 
-        run("sudo mv {}/web_static/* {}".format(file_dir, file_dir))
+        run("mv {}web_static/* {}".format(file_dir, file_dir))
 
-        run("sudo rm -rf {}/web_static".format(file_dir))
+        run("rm -rf {}web_static".format(file_dir))
 
-        run("sudo rm -rf {}".format("/data/web_static/current"))
+        run("rm -rf {}".format("/data/web_static/current"))
 
         """Create a symbolic link"""
-        run("sudo ln -s {} {}".format(
+        run("ln -s {} {}".format(
             file_dir, "/data/web_static/current"))
 
         print("New version deployed!")
 
         return True
     except Exception as e:
-        print(f"An error occurred: {str(e)}")
         return False
