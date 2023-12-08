@@ -4,9 +4,8 @@ import os
 from datetime import datetime
 from fabric.api import local, run, env, put
 
+
 env.hosts = ["54.86.45.44", "52.91.122.202"]
-#env.user = "ubuntu"
-#env.password = local(ca)
 
 
 def do_pack():
@@ -44,38 +43,53 @@ def do_deploy(archive_path):
     """Distributes an archive to your web servers,
     using the function do_deploy
     Args:
-        archive_path:
+        archive_path: path to the archive
+    Return:
+        True if sucessfully and False otherwise.
     """
 
+    """If archive_path does not exit"""
     if not os.path.exists(archive_path):
         return False
 
     try:
+        """Upload to /tmp/ directory of the server"""
         put(archive_path, "/tmp/")
-        file_without_ext = os.path.splitext(os.path.basename(
-            archive_path))[0]
 
+        """Retrive the file name"""
+        archived_file = "/tmp/" + archive_path[9:]
+
+        """Without the extension"""
+        file_without_ext = archived_file[:-4]
+
+        """Full path without the extension of the file"""
         file_dir = "/data/web_static/releases/{}".format(
                 file_without_ext)
 
-        uncompressed_dir = "{}/".format(file_dir)
-
-        run("mkdir -p {}".format(file_dir))
+        """Create the directory & Uncompress the file"""
+        run("sudo mkdir -p {}".format(file_dir))
 
         run(
-                "tar -xvf /tmp/{} -C {}".format(
-                    os.path.basename(archive_path),
-                    uncompressed_dir
+                "sudo tar -xvf {} -C {}/".format(
+                    archived_file,
+                    file_dir
                     )
                 )
 
-        run("rm -f /tmp/{}".format(
-            os.path.basename(archive_path)))
+        """Remove thr archived file"""
+        run("sudo rm {}".format(archived_file))
 
-        run("rm -rf {}".format("/data/web_static/current"))
+        run("sudo mv {}/web_static/* {}".format(file_dir, file_dir))
 
-        run("ln -s {} {}".format(
+        run("sudo rm -rf {}/web_static".format(file_dir))
+
+        run("sudo rm -rf {}".format("/data/web_static/current"))
+
+        """Create a symbolic link"""
+        run("sudo ln -s {} {}".format(
             file_dir, "/data/web_static/current"))
+
+        print("New version deployed!")
 
         return True
     except Exception as e:
