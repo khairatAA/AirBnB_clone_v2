@@ -33,8 +33,11 @@ if ! [ -d "/data/web_static/releases/test/" ]; then
 fi
 
 # Create a fake HTML file /data/web_static/releases/test/index.html (with simple content, to test your Nginx configuration)
-content="
-<html>
+touch /data/web_static/releases/test/index.html
+
+PATH_FILE=/data/web_static/releases/test/index.html
+
+content="<html>
 <head>
 </head>
 <body>
@@ -42,25 +45,18 @@ content="
 </body>
 </html>"
 
-echo "$content" > "/data/web_static/releases/test/index.html"
+echo "$content" | sudo tee "$PATH_FILE"
 
 # Create a symbolic link /data/web_static/current linked to the /data/web_static/releases/test/ folder. If the symbolic link already exists, it should be deleted and recreated every time the script is ran.
-
-if [ -L "/data/web_static/current" ]; then
-        rm  "/data/web_static/current"
-fi
-
-ln -s "/data/web_static/releases/test/" "/data/web_static/current"
+ln -sfn /data/web_static/releases/test/ /data/web_static/current
 
 # Give ownership of the /data/ folder to the ubuntu user AND group (you can assume this user and group exist). This should be recursive; everything inside should be created/owned by this user/group.
-chown -R "ubuntu":"ubuntu" "/data/"
+chown -R ubuntu:ubuntu /data/
 
 # Update the Nginx configuration to serve the content of /data/web_static/current/ to hbnb_static (ex: https://mydomainname.tech/hbnb_static
-
-location_config="\n\tlocation /hbnb_static {\n\
-\t\talias /data/web_static/current/;\n\t}"
-
 # Add the location configuration to the Nginx
-sed -i "/server_name _;/a \ $location_config" /etc/nginx/sites-available/default
+CONF_PATH=/etc/nginx/sites-enabled/default
 
-service nginx restart > /dev/null
+sudo sed -i "/listen 80 default_server;/a\\\tlocation /hbnb_static/ {\n\talias /data/web_static/current/;\n\t}" "$CONF_PATH"
+
+service nginx restart
