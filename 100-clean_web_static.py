@@ -134,7 +134,7 @@ def do_clean(number=0):
         for version in versions_to_del:
             local("rm -r versions/{}".format(version))
 
-        # Delete all unnecessary archives (all archives 
+        # Delete all unnecessary archives (all archives
         # minus the number to keep) in the
         # /data/web_static/releases folder
         list_of_version = sorted(run(
