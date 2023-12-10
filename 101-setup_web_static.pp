@@ -1,6 +1,10 @@
 # sets up your web servers for the deployment of web_static
 
 # Install Nginx if it not already installed
+exec { 'apt-get update':
+  path => '/usr/bin:/bin',
+}
+
 package { 'nginx':
   ensure => installed,
 }
@@ -32,50 +36,45 @@ file { '/data/web_static/releases/test/':
 
 # Create a fake HTML file /data/web_static/releases/test/index.html (with simple content, to test your Nginx configuration)
 file { '/data/web_static/releases/test/index.html':
-  ensure => file,
-}
-
-file { '/data/web_static/releases/test/index.html':
   content => '<html>
-                <head></head>
-                <body>
-                    <h1>Testing Nginx configuration</h1>
-                </body>
+  <head></head>
+  <body>
+    <h1>Testing Nginx configuration</h1>
+  </body>
             </html>',
+  mode    => '0644',
+  owner   => 'ubuntu',
+  group   => 'ubuntu',
 }
 
-# Create a symbolic link /data/web_static/current linked to the /data/web_static/releases/test/ folder. If the symbolic link already exists, it should be deleted and recreated every time the script is ran.
-file { '/data/web_static/current':
-  ensure => link,
-  target => '/data/web_static/releases/test/',
-  force  => true,
+# Create a symbolic link /data/web_static/current linked to the /data/web_static/releases/test/ folder.
+# If the symbolic link already exists, it should be deleted and recreated every time the script is ran.
+exec { 'ln -sfn /data/web_static/releases/test/ /data/web_static/current':
+  path => ['/usr/bin', '/bin'],
 }
 
-# Give ownership of the /data/ folder to the ubuntu user AND group (you can assume this user and group exist). This should be recursive; everything inside should be created/owned by this user/group.
-file { '/data/':
-  owner  => 'ubuntu',
-  group  => 'ubuntu',
+exec { 'chown -R ubuntu:ubuntu /data/':
+  path => '/usr/bin/:/usr/local/bin/:/bin/',
 }
-
 # Update the Nginx configuration to serve the content of /data/web_static/current/ to hbnb_static (ex: https://mydomainname.tech/hbnb_static
 
 # Add the location configuration to the Nginx
-$CONF_PATH='/etc/nginx/sites-enabled/default'
+$conf_path='/etc/nginx/sites-enabled/default'
 
 file_line { 'add_hbnb_static_location':
   ensure => present,
-  path   => $CONF_PATH,
+  path   => $conf_path,
   line   => '        location /hbnb_static/ {',
   after  => '        listen 80 default_server;',
 }
 
 file_line { 'add_alias_to_location':
   ensure => present,
-  path   => $CONF_PATH,
+  path   => $conf_path,
   line   => '            alias /data/web_static/current/;',
   after  => '        location /hbnb_static/ {',
 }
 
-exec {
-  commad  => 'service nginx restart'
+exec { 'restart_nginx':
+  command  => '/usr/sbin/service nginx restart'
 }
