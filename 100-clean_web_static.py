@@ -2,7 +2,7 @@
 """2-do_deploy_web_static module"""
 import os
 from datetime import datetime
-from fabric.api import local, run, env, put
+from fabric.api import *
 
 
 env.hosts = ["54.86.45.44", "52.91.122.202"]
@@ -125,12 +125,12 @@ def do_clean(number=0):
     else:
         number = int(number)
 
-    with cd('/versions'):
-        list_of_version = run('ls -t').split('\n')
+    with lcd('versions'):
+        list_of_version = sorted(run('ls -t').split())
         versions_to_del = list_of_version[number:]
 
         for version in versions_to_del:
-            run("rm -rf {}".format(version))
+            local("rm -rf {}".format(version))
 
     with cd('/data/web_static/releases'):
         list_of_version = sorted(run('ls -t').split())
