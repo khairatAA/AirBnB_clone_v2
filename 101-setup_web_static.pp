@@ -1,5 +1,3 @@
-# sets up your web servers for the deployment of web_static
-
 # Install Nginx if it not already installed
 exec { 'apt-get update':
   path => '/usr/bin:/bin',
@@ -52,7 +50,7 @@ file { '/data/web_static/releases/test/index.html':
   <body>
     <h1>Testing Nginx configuration</h1>
   </body>
-            </html>',
+</html>',
   mode    => '0644',
   owner   => 'ubuntu',
   group   => 'ubuntu',
@@ -67,20 +65,12 @@ exec { 'ln -sfn /data/web_static/releases/test/ /data/web_static/current':
 # Update the Nginx configuration to serve the content of /data/web_static/current/ to hbnb_static (ex: https://mydomainname.tech/hbnb_static
 
 # Add the location configuration to the Nginx
-$conf_path='/etc/nginx/sites-enabled/default'
-
-file_line { 'add_hbnb_static_location':
-  ensure => present,
-  path   => $conf_path,
-  line   => '        location /hbnb_static/ {',
-  after  => '        listen 80 default_server;',
-}
-
-file_line { 'add_alias_to_location':
-  ensure => present,
-  path   => $conf_path,
-  line   => '            alias /data/web_static/current/;',
-  after  => '        location /hbnb_static/ {',
+$location='\n\tlocation /hbnb_static {\n\
+        \talias /data/web_static/current/;\n\
+        }'
+exec { 'edit_config_file':
+  command => "sudo sed -i '/server_name _;/a \\ ${location}' /etc/nginx/sites-available/default",
+  path    => '/usr/bin:/bin',
 }
 
 exec { 'restart_Nginx':
