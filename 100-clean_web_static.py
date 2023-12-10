@@ -129,11 +129,6 @@ def do_clean(number=0):
         # Delete all unnecessary archives (all archives
         # minus the number to keep) in the versions folder
         list_of_version = local('ls -t versions', capture=True).split('\n')
-        total_versions = len(list_of_versions)
-
-        if number >= total_versions:
-            return
-
         versions_to_del = list_of_version[number:]
 
         for version in versions_to_del:
@@ -145,11 +140,6 @@ def do_clean(number=0):
         list_of_version = sorted(run(
             'ls -t /data/web_static/releases').split()
             )
-
-        total_versions = len(list_of_versions)
-
-        if number >= total_versions:
-            return
 
         versions_to_del = list_of_version[number:]
 
