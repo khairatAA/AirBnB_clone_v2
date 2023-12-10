@@ -10,8 +10,19 @@ package { 'nginx':
 }
 
 # Create the folder /data/ if it doesn’t already exist
+user { 'ubuntu':
+  ensure => present,
+}
+
+group { 'ubuntu':
+  ensure => present,
+}
+
 file { '/data/':
   ensure => directory,
+  recurse => true,
+  owner   => 'ubuntu',
+  group   => 'ubuntu',
 }
 
 # Create the folder /data/web_static/ if it doesn’t already exist
@@ -53,9 +64,6 @@ exec { 'ln -sfn /data/web_static/releases/test/ /data/web_static/current':
   path => ['/usr/bin', '/bin'],
 }
 
-exec { 'chown -R ubuntu:ubuntu /data/':
-  path => '/usr/bin/:/usr/local/bin/:/bin/',
-}
 # Update the Nginx configuration to serve the content of /data/web_static/current/ to hbnb_static (ex: https://mydomainname.tech/hbnb_static
 
 # Add the location configuration to the Nginx
@@ -75,6 +83,7 @@ file_line { 'add_alias_to_location':
   after  => '        location /hbnb_static/ {',
 }
 
-exec { 'restart_nginx':
-  command  => '/usr/sbin/service nginx restart'
+exec { 'restart_Nginx':
+  command => 'sudo service nginx restart > /dev/null',
+  path    => '/usr/bin:/bin',
 }
