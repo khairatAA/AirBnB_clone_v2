@@ -125,16 +125,17 @@ def do_clean(number=0):
     else:
         number = int(number)
 
-    with lcd('versions'):
-        list_of_version = sorted(run('ls -t').split())
-        versions_to_del = list_of_version[number:]
+    list_of_version = local('ls -t versions', capture=True).split('\n')
+    versions_to_del = list_of_version[number:]
 
-        for version in versions_to_del:
-            local("rm -rf {}".format(version))
+    for version in versions_to_del:
+        local("rm -r versions/{}".format(version))
 
-    with cd('/data/web_static/releases'):
-        list_of_version = sorted(run('ls -t').split())
-        versions_to_del = list_of_version[number:]
+    list_of_version = sorted(run(
+        'ls -t /data/web_static/releases').split()
+        )
+    versions_to_del = list_of_version[number:]
 
-        for version in versions_to_del:
-            run("rm -rf {}".format(version))
+    for version in versions_to_del:
+        if "web_static_" in archive:
+            run("rm -r /data/web_static/releases'{}".format(version))
