@@ -125,17 +125,36 @@ def do_clean(number=0):
     else:
         number = int(number)
 
-    list_of_version = local('ls -t versions', capture=True).split('\n')
-    versions_to_del = list_of_version[number:]
+    try:
+        # Delete all unnecessary archives (all archives
+        # minus the number to keep) in the versions folder
+        list_of_version = local('ls -t versions', capture=True).split('\n')
+        total_versions = len(list_of_versions)
 
-    for version in versions_to_del:
-        local("rm -r versions/{}".format(version))
+        if number >= total_versions:
+            return
 
-    list_of_version = sorted(run(
-        'ls -t /data/web_static/releases').split()
-        )
-    versions_to_del = list_of_version[number:]
+        versions_to_del = list_of_version[number:]
 
-    for version in versions_to_del:
-        if "web_static_" in archive:
-            run("rm -r /data/web_static/releases'{}".format(version))
+        for version in versions_to_del:
+            local("rm -r versions/{}".format(version))
+
+        # Delete all unnecessary archives (all archives 
+        # minus the number to keep) in the
+        # /data/web_static/releases folder
+        list_of_version = sorted(run(
+            'ls -t /data/web_static/releases').split()
+            )
+
+        total_versions = len(list_of_versions)
+
+        if number >= total_versions:
+            return
+
+        versions_to_del = list_of_version[number:]
+
+        for version in versions_to_del:
+            if "web_static_" in archive:
+                run("rm -r /data/web_static/releases'{}".format(version))
+    except Exception as e:
+        pass
