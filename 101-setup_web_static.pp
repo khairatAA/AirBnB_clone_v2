@@ -64,7 +64,7 @@ exec { 'ln -sfn /data/web_static/releases/test/ /data/web_static/current':
 
 # Update the Nginx configuration to serve the content of /data/web_static/current/ to hbnb_static (ex: https://mydomainname.tech/hbnb_static
 
-# Add the location configuration to the Nginx
+# Add the location configuration to the Nginx.
 $location='\n\tlocation /hbnb_static {\n\
         \talias /data/web_static/current/;\n\
         }'
