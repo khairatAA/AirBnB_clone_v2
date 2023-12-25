@@ -16,19 +16,17 @@ class State(BaseModel, Base):
 
     storage_type = os.getenv('HBNB_TYPE_STORAGE')
 
-    if storage_type == 'db':
-        name = Column(String(128), nullable=False)
+    name = Column(String(128), nullable=False)
 
+    if storage_type == 'db':
         cities = relationship(
                 'City',
                 backref='state',
                 cascade='all, delete-orphan'
                 )
-    else:
-        name = ""
-        cities = []
 
-    if (os.environ.get("HBNB_TYPE_STORAGE", 'file') == "file"):
+    if storage_type == 'fs':
+        name=''
         @property
         def cities(self):
             '''
@@ -37,10 +35,10 @@ class State(BaseModel, Base):
             '''
             city_list = []
 
-            city_obj = models.storage.all(City)
+            city_objs = models.storage.all(City)
 
-            for key, value in city_obj.items():
-                if value.state_id == self.id:
-                    city_list.append(value)
+            for city_obj in city_objs.values():
+                if city_obj.state_id == self.id:
+                    city_list.append(city_obj)
 
             return city_list
