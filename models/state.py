@@ -26,7 +26,8 @@ class State(BaseModel, Base):
                 )
 
     if storage_type == 'fs':
-        name=''
+        name = ''
+
         @property
         def cities(self):
             '''
