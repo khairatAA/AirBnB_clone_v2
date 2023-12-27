@@ -9,6 +9,9 @@ from os import getenv
 import models
 
 
+"""Represents the many to many relationship table
+between Place and Amenity records.
+"""
 place_amenity = Table(
             'place_amenity',
             Base.metadata,
@@ -35,9 +38,7 @@ class Place(BaseModel, Base):
 
     if getenv("HBNB_TYPE_STORAGE") == 'db':
         city_id = Column(
-                String(60),
-                ForeignKey('cities.id'),
-                nullable=False
+                String(60), ForeignKey('cities.id'), nullable=False
                 )
 
         user_id = Column(
