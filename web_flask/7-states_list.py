@@ -14,6 +14,7 @@ def states_list():
 
     return render_template('7-states_list.html', state_obj=state_obj)
 
+
 @app.teardown_appcontext
 def teardown_db(exception):
     """To remove the current SQLAlchemy Session"""
