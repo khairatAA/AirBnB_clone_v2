@@ -8,9 +8,7 @@ from models.review import Review
 from os import getenv
 import models
 
-"""Represents the many to many relationship table
-between Place and Amenity records.
-"""
+
 if getenv('HBNB_TYPE_STORAGE') == 'db':
     place_amenity = Table(
             'place_amenity',
