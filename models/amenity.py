@@ -4,14 +4,12 @@ from models.base_model import BaseModel, Base
 from sqlalchemy import Column, String, Integer, Float, ForeignKey
 from sqlalchemy.orm import relationship
 from sqlalchemy.ext.declarative import declarative_base
-# from models.place import Place
 from os import getenv
 import models
 
 
 class Amenity(BaseModel, Base):
     """Amenity class"""
-
     __tablename__ = 'amenities'
 
     name = Column(

@@ -8,28 +8,22 @@ from models.review import Review
 from os import getenv
 import models
 
-
 """Represents the many to many relationship table
 between Place and Amenity records.
 """
-place_amenity = Table(
+if getenv('HBNB_TYPE_STORAGE') == 'db':
+    place_amenity = Table(
             'place_amenity',
             Base.metadata,
             Column(
-                'place_id',
-                String(60),
-                ForeignKey('places.id'),
-                primary_key=True,
-                nullable=False
+                'place_id', String(60), ForeignKey('places.id'),
+                primary_key=True, nullable=False
                 ),
             Column(
-                'amenity_id',
-                String(60),
-                ForeignKey('amenities.id'),
-                primary_key=True,
-                nullable=False
+                'amenity_id', String(60), ForeignKey('amenities.id'),
+                primary_key=True, nullable=False
                 )
-            )
+        )
 
 
 class Place(BaseModel, Base):
