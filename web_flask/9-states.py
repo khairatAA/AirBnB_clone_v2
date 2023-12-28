@@ -16,7 +16,6 @@ def states(state_id=None):
 
     if "State.{}".format(state_id) in state_obj:
         state = state_obj["State.{}".format(state_id)]
-            
         return render_template(
             '9-states.html',
             state_obj=state_obj,
