@@ -14,11 +14,21 @@ def states(state_id=None):
     state_obj = storage.all(State)
     city_obj = storage.all(City)
 
+    if "State.{}".format(state_id) in state_obj:
+        state = state_obj["State.{}".format(state_id)]
+            
+        return render_template(
+            '9-states.html',
+            state_obj=state_obj,
+            state_id=state_id,
+            city_obj=city_obj,
+            state=state
+            )
     return render_template(
             '9-states.html',
             state_obj=state_obj,
             state_id=state_id,
-            city_obj=city_obj
+            city_obj=city_obj,
             )
 
 

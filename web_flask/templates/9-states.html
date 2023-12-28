@@ -11,8 +11,7 @@
       <li>{{ state.id }}: <b>{{ state.name }}</b></li>
       {% endfor %}
     </ul>
-    {% else %} {% if state_id in state_obj %} {% set state = state_obj[state_id]
-    %}
+    {% elif "State.%s"|format(state_id) in state_obj %}
     <h1>State: {{ state.name }}</h1>
     <h3>Cities:</h3>
     <ul>
@@ -22,6 +21,6 @@
     </ul>
     {% else %}
     <h1>Not found!</h1>
-    {% endif %} {% endif %}
+    {% endif %}
   </body>
 </html>
