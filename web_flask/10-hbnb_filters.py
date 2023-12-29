@@ -15,7 +15,6 @@ def hbnb_filters():
 
     amenity_obj = storage.all(Amenity)
     # sorted_amenities = sorted(amenities, key=lambda anemity: anemity.name)
-
     return render_template(
         '10-hbnb_filters.html',
         state_obj=state_obj,
