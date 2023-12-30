@@ -16,6 +16,8 @@
 
 	line-height: 20px;
 	border-right: 1px solid #DDDDDD;
+	position: relative;
+	cursor: pointer;
 }
 
 .amenities {
@@ -26,6 +28,8 @@
     width: 25%;
 
 	line-height: 20px;
+	position: relative;
+	cursor: pointer;
 }
 
 .popover {
@@ -42,6 +46,8 @@
 	border-radius: 4px;
 	max-height: 300px;
 	overflow-y: scroll;
+	position: relative;
+    z-index: 1;
 }
 
 .locations:hover .popover {
